@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mysql = require('../mysql').pool;
 const bcrypt = require('bcrypt');
-const {authRole} = require('../middleware/authRoles');
+const { authRole, ROLE } = require('../middleware/authRoles');
 
 /**
  * @swagger
@@ -17,8 +17,7 @@ const {authRole} = require('../middleware/authRoles');
  *      '500':
  *          description: 'Internal Error'
  */
-//RETORNA TODOS USUARIOS
-router.get('/', authRole(['admin', 'cliente']), (req, res, next) => {
+router.get('/', authRole(['admin', 'funcionario', 'cliente']), (req, res, next) => {
     const usuario = [];
     const endereco = [];
 
@@ -63,8 +62,57 @@ router.get('/', authRole(['admin', 'cliente']), (req, res, next) => {
     });
 });
 
+//RETORNA O USUARIO LOGADO
+router.get('/me', authRole([ROLE.ALL]), (req, res, next) => {
+    const idUsuario = req.usuario.idUsuario;
+
+    const usuario = [];
+    const endereco = [];
+
+    mysql.getConnection((error, conn) => {
+        if(error){return res.status(500).send({ error: error})};
+
+        conn.query(
+            'SELECT * FROM usuario u INNER JOIN endereco e ON e.idEndereco = u.idEndereco WHERE u.idUsuario = ?',
+            [idUsuario],
+            (error, resultado, field) => {
+                conn.release();
+                if(error){return res.status(500).send({ error: error})};
+
+                if(resultado.length == 0){
+                    return res.status(404).send({
+                        error: 'Não foi encontrado nenhum usuario com esse ID'
+                    });
+                }
+
+                for(var x = 0 in resultado){
+                    endereco.push({
+                        idEndereco: resultado[x].idEndereco,
+                        identificador: resultado[x].identificador,
+                        rua: resultado[x].rua,
+                        numero: resultado[x].numero,
+                        bairro: resultado[x].bairro,
+                        cidade: resultado[x].cidade,
+                        cep: resultado[x].cep,
+                        estado: resultado[x].estado
+                    })
+
+                    usuario.push({
+                        idUsuario: resultado[x].idUsuario,
+                        nome: resultado[x].nome,
+                        cpf: resultado[x].cpf,
+                        celular: resultado[x].celular,
+                        endereco: endereco[x]
+                    });
+                }
+                return res.status(200).send({ response: usuario });
+            }
+        )
+    });
+});
+
 //RETORNA UM USUARIO ESPECIFICO
-router.get('/:idUsuario', authRole(['admin']), (req, res, next) => {
+router.get('/:idUsuario', authRole(['admin', 'funcionario']), (req, res, next) => {
     const id = req.params.idUsuario
 
     const usuario = [];
@@ -176,7 +224,7 @@ router.post('/', (req, res, next) => {
 });
 
 //DELETA UM USUARIO
-router.delete('/:idUsuario', authRole(['admin']), (req, res, next) => {
+router.delete('/:idUsuario', authRole(['admin', 'funcionario']), (req, res, next) => {
     const id = req.params.idUsuario
 
     mysql.getConnection((error, conn) => {
