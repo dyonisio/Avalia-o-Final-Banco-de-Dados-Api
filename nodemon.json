@@ -1,0 +1,12 @@
+{
+    "env": {
+        "MYSQL_USER" : "hotelambra",
+        "MYSQL_PASSWORD": "9_DCa5A+p8",
+        "MYSQL_DATABASE": "hotelambra",
+        "MYSQL_HOST" : "mysql873.umbler.com",
+        "MYSQL_PORT" : 41890,
+
+        "JWT_KEY" : "secamb9_DC",
+        "JWT_EXPIRES" : "30d"
+    }
+}
