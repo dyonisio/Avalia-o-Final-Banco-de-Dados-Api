@@ -25,10 +25,15 @@ const swaggerOptions = {
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
-const rotaHotel = require('./routes/hotel');
+const rotaQuarto = require('./routes/quarto');
+const rotaTipoQuarto = require('./routes/tipoQuarto');
+const rotaProduto = require('./routes/produto');
+const rotaVagaGaragem = require('./routes/vagaGaragem');
 const rotaHospedagem = require('./routes/hospedagem');
 const rotaUser = require('./routes/user');
 const rotaAuth = require('./routes/auth');
+const rotaItensPedido = require('./routes/itensPedido');    
+const rotaPedido = require('./routes/pedido');
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false})); // apenas dados simples
@@ -50,10 +55,15 @@ app.use((req, res, next) => {
 });
 
 app.use(defaultPath+'/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-app.use(defaultPath+'/hotel', rotaHotel);
+app.use(defaultPath+'/quarto', rotaQuarto);
+app.use(defaultPath+'/tipoquarto', rotaTipoQuarto);
+app.use(defaultPath+'/vagagaragem', rotaVagaGaragem);
 app.use(defaultPath+'/hospedagem', rotaHospedagem);
 app.use(defaultPath+'/user', rotaUser);
 app.use(defaultPath+'/auth', rotaAuth);
+app.use(defaultPath+'/produto', rotaProduto);
+app.use(defaultPath+'/itenspedido', rotaItensPedido);
+app.use(defaultPath+'/pedido', rotaPedido);
 
 //Rota não encontrada
 app.use((req, res, next) =>{
@@ -65,8 +75,8 @@ app.use((req, res, next) =>{
 app.use((error, req, res, next) => {
     res.status(error.status || 500)
     return res.send({
-        erro: {
-            mensagem: error.message
+        error: {
+            message: error.message
         }
     });
 });
