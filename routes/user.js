@@ -162,8 +162,7 @@ router.get('/:idUsuario', authRole(['admin', 'funcionario']), (req, res, next) =
 
 //CADASTRA UM USUARIO
 router.post('/', (req, res, next) => {
-    const endereco = [];
-    endereco.push({
+    const endereco = {
         idEndereco: null,
         identificador: req.body.identificador, 
         rua: req.body.rua, 
@@ -173,8 +172,8 @@ router.post('/', (req, res, next) => {
         cidade: req.body.cidade,
         cep: req.body.cep,
         estado: req.body.estado
-    });
-
+    };
+    
     const usuario = []
     usuario.push({
         idUsuario: null,
