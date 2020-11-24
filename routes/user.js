@@ -162,25 +162,25 @@ router.get('/:idUsuario', authRole(['admin', 'funcionario']), (req, res, next) =
 
 //CADASTRA UM USUARIO
 router.post('/', (req, res, next) => {
-    const endereco = {
-        idEndereco: null,
-        identificador: req.body.identificador, 
-        rua: req.body.rua, 
-        numero: req.body.numero, 
-        complemento: req.body.complemento,
-        bairro: req.body.bairro,
-        cidade: req.body.cidade,
-        cep: req.body.cep,
-        estado: req.body.estado
-    }
+    const endereco = [
+        idEndereco = null,
+        identificador = req.body.identificador, 
+        rua = req.body.rua, 
+        numero = req.body.numero, 
+        complemento = req.body.complemento,
+        bairro = req.body.bairro,
+        cidade = req.body.cidade,
+        cep = req.body.cep,
+        estado = req.body.estado
+    ]
 
-    const usuario = {
-        idUsuario: null,
-        nome: req.body.nome,
-        cpf: req.body.cpf,
-        celular: req.body.celular,
-        endereco: endereco
-    }
+    const usuario = [
+        idUsuario = null,
+        nome = req.body.nome,
+        cpf = req.body.cpf,
+        celular = req.body.celular,
+        endereco = endereco
+    ]
 
     mysql.getConnection((error, conn) => {
         if(error){return res.status(500).send({ error: error})};
@@ -192,22 +192,22 @@ router.post('/', (req, res, next) => {
             } else {
                 conn.query(
                     'INSERT INTO `endereco` (`idEndereco`, `identificador`, `rua`, `numero`, `complemento`, `bairro`, `cidade`, `cep`, `estado`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?);',
-                    [endereco.identificador, endereco.rua, endereco.numero, endereco.complemento, endereco.bairro, endereco.cidade, endereco.cep, endereco.estado],
+                    [endereco[0].identificador, endereco[0].rua, endereco[0].numero, endereco[0].complemento[0], endereco[0].bairro, endereco[0].cidade, endereco[0].cep, endereco[0].estado],
                     (error, resultado, field) => {
                         if(error){return res.status(500).send({ error: error})};
-                        endereco.idEndereco = resultado.insertId;   
+                        endereco[0].idEndereco = resultado.insertId;   
 
                         bcrypt.hash(req.body.senha, 10, (errBcrypt, hash) => {
                             if(errBcrypt){return res.status(500).send({ error: errBcrypt })}
             
                             conn.query(
                                 'INSERT INTO `usuario` (`idUsuario`, `nome`, `cpf`, `senha`, `celular`, `idEndereco`) VALUES (NULL, ?, ?, ?, ?, ?);',
-                                [usuario.nome, usuario.cpf, hash, usuario.celular, endereco.idEndereco],
+                                [usuario[0].nome, usuario[0].cpf, hash, usuario[0].celular, endereco[0].idEndereco],
                                 (error, resultado, field) => {
                                     conn.release();
                                     if(error){return res.status(500).send({ error: error})};
             
-                                    usuario.idUsuario = resultado.insertId;
+                                    usuario[0].idUsuario = resultado.insertId;
                                         
                                     res.status(201).send({
                                         message: 'Usuario cadastrado com sucesso!',
