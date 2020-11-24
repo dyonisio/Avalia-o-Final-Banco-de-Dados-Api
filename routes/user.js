@@ -173,7 +173,7 @@ router.post('/', (req, res, next) => {
         cep: req.body.cep,
         estado: req.body.estado
     };
-    
+
     const usuario = []
     usuario.push({
         idUsuario: null,
@@ -193,17 +193,17 @@ router.post('/', (req, res, next) => {
             } else {
                 conn.query(
                     'INSERT INTO `endereco` (`idEndereco`, `identificador`, `rua`, `numero`, `complemento`, `bairro`, `cidade`, `cep`, `estado`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?);',
-                    [endereco[0].identificador, endereco[0].rua, endereco[0].numero, endereco[0].complemento[0], endereco[0].bairro, endereco[0].cidade, endereco[0].cep, endereco[0].estado],
+                    [endereco.identificador, endereco.rua, endereco.numero, endereco.complemento, endereco.bairro, endereco.cidade, endereco.cep, endereco.estado],
                     (error, resultado, field) => {
                         if(error){return res.status(500).send({ error: error})};
-                        endereco[0].idEndereco = resultado.insertId;   
+                        endereco.idEndereco = resultado.insertId;   
 
                         bcrypt.hash(req.body.senha, 10, (errBcrypt, hash) => {
                             if(errBcrypt){return res.status(500).send({ error: errBcrypt })}
             
                             conn.query(
                                 'INSERT INTO `usuario` (`idUsuario`, `nome`, `cpf`, `senha`, `celular`, `idEndereco`) VALUES (NULL, ?, ?, ?, ?, ?);',
-                                [usuario[0].nome, usuario[0].cpf, hash, usuario[0].celular, endereco[0].idEndereco],
+                                [usuario[0].nome, usuario[0].cpf, hash, usuario[0].celular, endereco.idEndereco],
                                 (error, resultado, field) => {
                                     conn.release();
                                     if(error){return res.status(500).send({ error: error})};
