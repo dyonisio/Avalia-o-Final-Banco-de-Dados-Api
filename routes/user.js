@@ -162,25 +162,27 @@ router.get('/:idUsuario', authRole(['admin', 'funcionario']), (req, res, next) =
 
 //CADASTRA UM USUARIO
 router.post('/', (req, res, next) => {
-    const endereco = [
-        idEndereco = null,
-        identificador = req.body.identificador, 
-        rua = req.body.rua, 
-        numero = req.body.numero, 
-        complemento = req.body.complemento,
-        bairro = req.body.bairro,
-        cidade = req.body.cidade,
-        cep = req.body.cep,
-        estado = req.body.estado
-    ]
+    const endereco = [];
+    endereco.push({
+        idEndereco: null,
+        identificador: req.body.identificador, 
+        rua: req.body.rua, 
+        numero: req.body.numero, 
+        complemento: req.body.complemento,
+        bairro: req.body.bairro,
+        cidade: req.body.cidade,
+        cep: req.body.cep,
+        estado: req.body.estado
+    });
 
-    const usuario = [
-        idUsuario = null,
-        nome = req.body.nome,
-        cpf = req.body.cpf,
-        celular = req.body.celular,
-        endereco = endereco
-    ]
+    const usuario = []
+    usuario.push({
+        idUsuario: null,
+        nome: req.body.nome,
+        cpf: req.body.cpf,
+        celular: req.body.celular,
+        endereco: endereco
+    });
 
     mysql.getConnection((error, conn) => {
         if(error){return res.status(500).send({ error: error})};
