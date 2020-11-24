@@ -211,7 +211,7 @@ router.post('/', (req, res, next) => {
                                         
                                     res.status(201).send({
                                         message: 'Usuario cadastrado com sucesso!',
-                                        createdCliente: usuario
+                                        usuarioProxy: usuario
                                     });
                                 }
                             )
